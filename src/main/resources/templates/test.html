@@ -1,0 +1,10 @@
+<h:form>
+    <h:messages globalOnly="true" showDetail="true" />
+    <!-- Yuqoridagi globalOnly va showDetail parametrlari xatoliklar haqida to'liqroq ma'lumotlarni ko'rsatadi -->
+
+    <!-- Foydalanuvchi kiritish uchun input maydonchalar -->
+    <h:inputText value="#{userBean.user.name}" />
+    <h:inputText value="#{userBean.user.email}" />
+
+    <h:commandButton value="Save" action="#{userBean.saveUser}" />
+</h:form>

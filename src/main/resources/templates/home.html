@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <title>Trello Home</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://kartinki.pics/uploads/posts/2022-02/thumbs/1644903973_2-kartinkin-net-p-kartinki-na-fon-2.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #fff;
+        }
+
+        .user-photo-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: red;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        nav {
+            background-color: rgba(0, 123, 255, 0.9);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+
+        nav img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .container h1 {
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .posts {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 200px;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        .edit-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #333;
+        }
+
+
+        nav {
+            background-color: rgba(0, 123, 255, 0.9);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+
+        nav img {
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .container {
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .container h1 {
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .posts {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 300px;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .edit-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .add-task-button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div style="color: #fff; font-size: 24px; font-weight: bold;">My Trello</div>
+    <div>
+        <a href="/report/report_1">Report_1</a>
+        <a href="/report/report_2">Report_2</a>
+    </div>
+    <div style="position: relative;">
+        <div id="user-photo" class="user-photo-placeholder"></div>
+        <span id="user-name" style="font-weight: bold;" th:text="${authentication.name}"></span>
+        <div style="display: inline-block;">
+            <button onclick="toggleDropdown()"
+                    style="background-color: transparent; color: #fff; border: none; cursor: pointer;">
+                ▼
+            </button>
+            <div id="dropdown"
+                 style="display: none; position: absolute; right: 0; background-color: rgba(0, 123, 255, 0.9); border: 1px solid #ccc; z-index: 1;">
+                <a href="#" style="color: #fff; padding: 10px; display: block; text-decoration: none;">Settings</a>
+                <a href="/home" style="color: #fff; padding: 10px; display: block; text-decoration: none;">My tasks</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="posts">
+        <div th:each="post : ${posts}" class="card" ondrop="onBoxDrop" ondragover="onBoxDrag(1)">
+            <a th:href="|/post/editPostPage/${post.id}|"><span class="edit-icon">✎</span></a>
+            <a class="btn" th:href="@{'/post/change'(postId=${post.id}, index=${post.getIndex()-1})}"
+               th:if="${post.getIndex()!=0}" th:text="${!postStat.first} ? '⏪':''"></a>
+            <form th:action="|/post/deletePost/${post.id}|" method="post">
+                <button><span>🗑️</span></button>
+            </form>
+            <a class="btn" th:href="@{'/post/change'(postId=${post.id}, index=${post.getIndex()+1})}"
+               th:if="${!postStat.last}">⏩</a>
+            <h3 th:text="${post.getName()}"></h3>
+            <div ondragstart="startDragging(100)" draggable="true" class="btn btn-warning my-1"
+                 th:styleappend="${task.deadLine!=null?(task.deadLine.isBefore(time)?'background-color: #ffa7a7':''):''}"
+                 th:each="task:${post.tasks}">
+                <form action="/task/deleteTask" method="post">
+                    <input type="hidden" th:value="${post.id}" name="postId">
+                    <input type="hidden" th:value="${task.id}" name="taskId">
+                    <button><span>🗑️</span></button>
+                </form>
+                <div>
+                    <a class="btn" th:text="${!postStat.first}?'⏪':''"></a>
+                    <a class="btn" th:href="|/task/editTask/${task.id}|"
+                       th:text="${task.name}"></a>
+                    <a class="btn" th:href="${'/task/change/'+post.id+','+(task.id)}" th:if="${!postStat.last}">⏩</a>
+                </div>
+            </div>
+            <form action="/task/createTask" method="post" class="group-form">
+                <input type="hidden" th:value="${post.id}" th:name="postId">
+                <input placeholder="Task..." type="text" name="name" required>
+                <button>✅</button>
+            </form>
+        </div>
+        <form action="/post/createPost" method="post">
+            <input placeholder="Post..." type="text" id="name" name="name" required>
+            <button>✅</button>
+        </form>
+    </div>
+</div>
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById('dropdown');
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+    }
+</script>
+<script>
+
+    let draggingElementId
+
+    function startDragging(id) {
+        draggingElementId = id;
+    }
+
+
+    function onBoxDrag(e) {
+        e.preventDefault()
+    }
+
+    function onBoxDrop(p) {
+        console.log(draggingElementId + " ni ")
+        console.log(p + " ga tashkladiz")
+    }
+</script>
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById('dropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function setUserPhoto() {
+        var userName = document.getElementById('user-name').innerText;
+        var userPhotoPlaceholder = document.getElementById('user-photo');
+        if (userName) {
+            userPhotoPlaceholder.innerText = userName.charAt(0).toUpperCase();
+        }
+    }
+
+    window.onload = setUserPhoto;
+</script>
+
+</body>
+</html>

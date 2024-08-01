@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://www.softmedal.com/screenshots/2022/05/wallpaper-1920x1080-1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .upload-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .upload-section .remove-btn {
+            background: #ff5b5b;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .datetime-picker {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .datetime-picker input {
+            flex: 1;
+        }
+
+        .datetime-picker .remove-btn {
+            align-self: flex-end;
+        }
+
+        .comment-section {
+            margin-top: 20px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+        }
+
+        .comment-content {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            flex: 1;
+            display: flex;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .comment-header span {
+            margin-left: 600px;
+        }
+
+        .comment-header h3 {
+            position: relative;
+            top: -10px;
+        }
+
+        .comment-body {
+            margin-top: 5px;
+        }
+
+        .comment-body h3 {
+            margin-left: -1000px;
+        }
+
+        .content-wrap {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .comment-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .comment-button {
+            background-color: #6200ea;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .comment-button:hover {
+            background-color: #3700b3;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .comment-form {
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 50%;
+            background-color: #f9f9f9;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .comment-form button {
+            background-color: #6200ea;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .comment-form button:hover {
+            background-color: #3700b3;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9; /* Orqa fon rangini o'zgartiring */
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effekt */
+            margin-bottom: 10px; /* Kartalar orasidagi bo'shliq */
+        }
+
+        .user-avatar {
+            width: 50px; /* Kichikroq qilish uchun kenglik */
+            height: 50px; /* Kichikroq qilish uchun balandlik */
+            border-radius: 8px; /* To'rtburchak shakli */
+            margin-right: 15px; /* Rasmdan keyin bo'shliq */
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-user {
+            margin-right: 10px;
+            color: #ff0000; /* O'chirish belgisi rangini qizil qilish */
+            text-decoration: none;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333; /* Matn rangini o'zgartirish */
+        }
+
+        .user-photo-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: red;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="container">
+        <div class="form-group button-group">
+            <form th:action="|/task/editTaskName/${currentTask.id}|" method="post">
+                <input type="text" th:value="${currentTask.getName()}" name="name" placeholder="Enter data to edit">
+                <button class="edit-btn">Edit</button>
+            </form>
+        </div>
+        <form th:action="|/user/selectUser/${currentTask.id}|" method="POST" class="payment-form">
+            <div class="form-group">
+                <label>Select Users:</label>
+                <select name="userId" class="p-4" required>
+                    <option selected disabled value="name">Select a user</option>
+                    <option th:text="${user.fullName}" th:value="${user.id}" th:each="user:${users}"></option>
+                </select>
+                <button class="btn btn-warning">OK</button>
+            </div>
+        </form>
+        <div th:each="user:${currentTask.getUsers()}" class="user-card">
+            <img src="https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+                 alt="" class="user-avatar">
+            <div class="user-info">
+                <form action="/task/delete-user" method="POST">
+                    <a th:text="${user.getFullName()}" class="user-name"></a>
+                    <input type="hidden" name="taskId" th:value="${currentTask.id}">
+                    <input type="hidden" name="userId" th:value="${user.id}">
+                    <button class="delete-user">❌</button>
+                </form>
+            </div>
+        </div>
+        <form action="/task/upload" enctype="multipart/form-data" method="POST">
+            <div class="form-group upload-section">
+                <label for="imageUpload">Upload Image:</label>
+                <input type="file" id="imageUpload" name="file" accept="image/*">
+                <input type="hidden" th:value="${currentTask.id}" name="taskId">
+                <img id="uploadedImage" src="" alt="Uploaded Image" style="display: none;">
+                <button class="btn btn-warning text-center">upload</button>
+            </div>
+        </form>
+
+        <div th:each="file : ${attachmentContents}">
+            <form th:action="|/task/deleteFile/${currentTask.id}|" method="post">
+                <div th:if="${file?.attachment?.id != null and currentTask?.attachment?.id != null and file.attachment.id == currentTask.attachment.id}">
+                    <input type="hidden" th:value="${file.id}" name="attachmentId">
+                    <img width="200" th:src="'data:image/png;base64,' + ${file.base64()}"
+                         class="card-img-top"
+                         alt="Book Image">
+                </div>
+                <!--                <button class="remove-btn" id="removeImage">X</button>-->
+            </form>
+        </div>
+
+        <div class="form-group datetime-picker">
+            <form th:action="|/task/editTaskDeadline/${currentTask.id}|" method="post">
+                <input type="datetime-local" name="deadLine" required>
+                <button class="ok-btn">OK</button>
+            </form>
+        </div>
+        <div class="comment" th:each="taskDeadline:${taskDeadlines}">
+            <form action="/task/deleteDeadLine"
+                  method="post">
+                <a th:text="${taskDeadline.deadLine}"></a>
+                <input type="hidden" th:value="${currentTask.id}" name="taskId">
+                <button>🗑️</button>
+            </form>
+        </div>
+        <div class="comment-section">
+            <button class="comment-button" onclick="openCommentForm()">Izoh yozish 💬</button>
+        </div>
+        <form th:action="|/task/comment/${currentTask.id}|" method="post">
+            <div class="comment-form" id="commentForm" style="display: none;">
+                <input class="w-100" type="text" placeholder="comment" name="text">
+                <button class="w-100 my-2" onclick="submitComment()">Yuborish📥</button>
+            </div>
+        </form>
+        <div class="comment-section">
+            <div class="comment">
+                <div class="content-wrap">
+                    <div th:each="comment:${comments}">
+                        <form class="comment-content" action="/task/deleteComment" method="POST">
+                            <img src="https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
+                                 alt="User Photo">
+                            <span id="user-name" style="font-weight: bold;" th:text="${authentication.name}"></span>
+                            <div class="comment-header">
+                                <input type="hidden" name="commentId" th:value="${comment.id}">
+                                <input type="hidden" name="taskId" th:value="${currentTask.id}">
+                                <div>
+                                    <span th:text="${comment.dateTime}"></span>
+                                    <h3 th:text="${comment.text}"></h3>
+                                </div>
+                                <button>❌</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-warning w-100" href="/">Back</a>
+    </div>
+</div>
+</body>
+<script>
+    function openCommentForm() {
+        document.getElementById("commentForm").style.display = "block";
+    }
+
+    function closeCommentForm() {
+        document.getElementById("commentForm").style.display = "none";
+    }
+
+    function submitComment() {
+        const newCommentText = document.getElementById("newCommentText").value.trim();
+        if (newCommentText.length > 0) {
+            const commentsSection = document.querySelector('.comments-section');
+
+            const commentDiv = document.createElement("div");
+            commentDiv.className = "comment";
+
+            const userName = "Foydalanuvchi: Anonim";
+            const currentDate = new Date().toISOString().slice(0, 10);
+
+            commentDiv.innerHTML = `
+            <p class="comment-user">${userName}</p>
+            <p class="comment-text">${newCommentText}</p>
+            <p class="comment-date">Sanasi: ${currentDate}</p>
+        `;
+
+            commentsSection.appendChild(commentDiv);
+
+            document.getElementById("newCommentText").value = "";
+            closeCommentForm();
+        } else {
+            alert("Iltimos, sharh yozing.");
+        }
+    }
+</script>
+
+
+</html>
